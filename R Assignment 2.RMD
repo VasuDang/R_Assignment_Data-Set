@@ -1,0 +1,100 @@
+mydata <- read.csv('train.csv')
+
+#Structure of the data set
+str(mydata) 
+
+#Listing the variables of data set can use ls(mydata) as well  
+names(mydata)
+
+#top 15 records
+head(mydata, 15) 
+
+#user defined function
+house_Age <- function(x){  
+  
+  a = 2022
+  b= mydata$YrSold 
+  c=mydata$SalePrice
+  d = a - b
+  
+  
+  paste("The house age in years is", d, "it was purchased in the year ", mydata$YrSold)
+  
+}
+house_Age()
+
+# Extract rows where Neigborhood is Timber and Sale Price is between 150000 and 250000
+filter(mydata,Neighborhood == "Timber",between(SalePrice,150000,250000)) 
+
+# The Sale Price variable is dependent on the Overall Quality and Condition of the house. This code creates a data frame by joining these variables.
+mydata.df = cbind(mydata$OverallQual,mydata$OverallCond,mydata$SalePrice)
+View(mydata.df)
+mydata.df = as.data.frame(mydata.df)
+names(mydata.df)[1]="OverallQual"
+names(mydata.df)[2]="OverallCond"
+names(mydata.df)[3]="SalePrice"
+mydata.df
+
+# Remove missing values in your dataset.
+is.na(mydata)
+na.omit(mydata)
+
+# Identify and remove duplicated data in your dataset
+duplicated(mydata)
+sum(duplicated(mydata))
+mydata[!duplicated(mydata), ]
+
+# Reorder multiple rows in descending order
+arrange(mydata, -LotArea,-LotFrontage)
+
+# Rename columns Street, Condition1 and Condition2
+mydata<-mydata %>%
+  rename(
+    NewStreet=Street,
+    ConditionA=Condition1,
+    ConditionB=Condition2
+  )
+mydata
+
+# Create a new column YearsToRemd with the difference in years from built to
+# remodeled
+mydata<-mydata %>%
+  mutate(
+    YearsToRemod = YearRemodAdd - YearBuilt
+  )
+mydata
+
+# Selects 65% of the rows from our working dataset to create a new training set
+ramD = sort(sample(nrow(mydata), nrow(mydata)*.65))
+tset<-mydata[ramD,]
+tset
+
+#summary statistics
+summary(mydata) 
+
+##scatterplot 
+
+mean(mydata$LotArea)
+median(mydata$SalePrice)
+mode(mydata$SalePrice)
+range(mydata$SalePrice)
+mean(mydata$SalePrice)
+
+cor(mydata$YrSold,mydata$SalePrice)
+
+plot(mydata$YrSold,mydata$SalePrice)
+
+##BarPlot
+
+Movies <-c(4,7,3,1,9)
+barplot(Movies)
+
+ggplot(mydata, aes(x= MSSubClass)) + geom_bar()
+head(mydata)
+
+##Correlation
+
+y=mydata$SalePrice
+x=mydata$YrSold
+plot(x,y)
+abline(lm(y~x))
